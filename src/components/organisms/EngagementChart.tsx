@@ -47,9 +47,17 @@ export const EngagementChart: React.FC = () => {
   } = useQuery<ChartDataPoint[]>({
     queryKey: [QUERY_KEYS.DAILY_METRICS, filters.dateRange],
     queryFn: async () => {
+      const end =
+        filters.dateRange?.end || new Date().toISOString().split('T')[0];
+      const start =
+        filters.dateRange?.start ||
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split('T')[0];
+
       const params = new URLSearchParams({
-        start: filters.dateRange?.start || '',
-        end: filters.dateRange?.end || '',
+        start,
+        end,
       });
       const response = await fetch(`${API_ENDPOINTS.METRICS_DAILY}?${params}`);
       if (!response.ok) throw new Error('Failed to fetch chart data');
