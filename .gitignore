@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# documentation (optional - keep these if you want to commit them)
+SCHEMA_MIGRATION_COMPLETE.md
+CHALLENGE_CHECKLIST.md
+PROJECT_STRUCTURE.md
+SCAFFOLDING_COMPLETE.md
+RESTRUCTURING_PLAN.md
+RESTRUCTURE_GUIDE.md
+MIGRATION_DECISION.md
+VERCEL_DEPLOYMENT_GUIDE.md
+RLS_TEST_GUIDE.md
