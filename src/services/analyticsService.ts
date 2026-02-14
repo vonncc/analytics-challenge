@@ -1,10 +1,10 @@
-import { supabase } from './supabaseClient';
+import { ApiClient } from './apiClient';
 import { Post, PostFilters, PostWithEngagement } from '@/types';
 import { formatEngagement } from '@/utils';
 
-export class AnalyticsService {
+export class AnalyticsService extends ApiClient {
   static async getPosts(filters?: PostFilters): Promise<PostWithEngagement[]> {
-    let query = supabase
+    let query = this.client
       .from('posts')
       .select('*')
       .order(filters?.sortBy || 'posted_at', {
@@ -32,7 +32,7 @@ export class AnalyticsService {
     const { data, error } = await query;
 
     if (error) {
-      throw new Error(`Failed to fetch posts: ${error.message}`);
+      this.handleError(error, 'Failed to fetch posts');
     }
 
     return (data || []).map((post) => ({
@@ -47,7 +47,7 @@ export class AnalyticsService {
   }
 
   static async getPostById(id: string): Promise<PostWithEngagement | null> {
-    const { data, error } = await supabase
+    const { data, error } = await this.client
       .from('posts')
       .select('*')
       .eq('id', id)
@@ -57,7 +57,7 @@ export class AnalyticsService {
       if (error.code === 'PGRST116') {
         return null;
       }
-      throw new Error(`Failed to fetch post: ${error.message}`);
+      this.handleError(error, 'Failed to fetch post');
     }
 
     return {
@@ -74,21 +74,21 @@ export class AnalyticsService {
   static async createPost(
     post: Omit<Post, 'id' | 'created_at'>
   ): Promise<Post> {
-    const { data, error } = await supabase
+    const { data, error } = await this.client
       .from('posts')
       .insert(post)
       .select()
       .single();
 
     if (error) {
-      throw new Error(`Failed to create post: ${error.message}`);
+      this.handleError(error, 'Failed to create post');
     }
 
     return data;
   }
 
   static async updatePost(id: string, updates: Partial<Post>): Promise<Post> {
-    const { data, error } = await supabase
+    const { data, error } = await this.client
       .from('posts')
       .update(updates)
       .eq('id', id)
@@ -96,17 +96,17 @@ export class AnalyticsService {
       .single();
 
     if (error) {
-      throw new Error(`Failed to update post: ${error.message}`);
+      this.handleError(error, 'Failed to update post');
     }
 
     return data;
   }
 
   static async deletePost(id: string): Promise<void> {
-    const { error } = await supabase.from('posts').delete().eq('id', id);
+    const { error } = await this.client.from('posts').delete().eq('id', id);
 
     if (error) {
-      throw new Error(`Failed to delete post: ${error.message}`);
+      this.handleError(error, 'Failed to delete post');
     }
   }
 }

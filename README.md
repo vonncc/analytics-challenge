@@ -533,15 +533,127 @@ git push origin main
 - Interfaces for all data structures
 - Type-safe API responses
 
-## 🎨 Design System
+## 🎨 Design System & Architecture Decisions
 
-### Atomic Design
+### Atomic Design Pattern
 
-- **Atoms**: Button, Input, Card, Typography
-- **Molecules**: TableRow, ChartLegend, ModalHeader
-- **Organisms**: PostsTable, EngagementChart, SummaryCards
-- **Templates**: DashboardLayout
-- **Pages**: Dashboard, Login
+We implemented **Atomic Design** methodology for component organization, providing a clear hierarchy and promoting reusability:
+
+#### Why Atomic Design?
+
+**Benefits:**
+
+- ✅ **Scalability**: Easy to add new features by composing existing components
+- ✅ **Consistency**: Shared atoms ensure uniform UI across the application
+- ✅ **Maintainability**: Changes to atoms propagate automatically to all consumers
+- ✅ **Testability**: Small, focused components are easier to test in isolation
+- ✅ **Developer Experience**: Clear mental model for where components belong
+
+**Component Hierarchy:**
+
+1. **Atoms** (Basic building blocks)
+   - `Button`, `Input`, `Card`, `Typography`, `EmptyState`, `LoadingState`
+   - Single-purpose, highly reusable
+   - No business logic, only presentation
+
+2. **Molecules** (Simple combinations)
+   - `TableRow`, `ChartLegend`, `ModalHeader`, `UserMenu`
+   - Combine atoms with minimal logic
+   - Handle simple user interactions
+
+3. **Organisms** (Complex sections)
+   - `PostsTable`, `EngagementChart`, `SummaryCards`, `PostDetailModal`
+   - Contain business logic and data fetching
+   - Compose molecules and atoms
+
+4. **Templates** (Page layouts)
+   - `DashboardLayout`
+   - Define page structure and layout
+   - Handle global state (filters, URL sync)
+
+5. **Pages** (Routes)
+   - `Dashboard` (`/`), `Login` (`/login`)
+   - Connect templates to routing
+   - Handle authentication and redirects
+
+**Trade-offs:**
+
+- ❌ More files to manage (but better organized)
+- ❌ Steeper learning curve for new developers
+- ✅ Long-term maintainability outweighs initial complexity
+
+---
+
+### Service Layer Architecture
+
+We implemented a **Base API Client Pattern** for the service layer to centralize common logic and follow DRY principles:
+
+#### ApiClient Base Class
+
+**Pattern:** Abstract base class with protected methods for shared functionality
+
+```typescript
+// Base class with common Supabase client access and error handling
+export class ApiClient {
+  protected static get client(): SupabaseClient
+  protected static handleError(error: PostgrestError, context: string): never
+  protected static async executeQuery<T>(...)
+  protected static async executeQueryNullable<T>(...)
+}
+
+// Services extend the base class
+export class AnalyticsService extends ApiClient { ... }
+export class MetricsService extends ApiClient { ... }
+```
+
+#### Why This Pattern?
+
+**Benefits:**
+
+- ✅ **DRY**: Error handling logic written once, used everywhere
+- ✅ **Consistency**: All services handle errors the same way
+- ✅ **Extensibility**: Easy to add JWT auth, logging, or retry logic in one place
+- ✅ **Type Safety**: Centralized TypeScript types for Supabase responses
+- ✅ **Testability**: Mock the base class to test all services
+
+**What It Centralizes:**
+
+1. **Supabase Client Access**: Single source via `this.client`
+2. **Error Handling**: Consistent error messages and context
+3. **Query Execution**: Reusable patterns for nullable vs required data
+4. **Future Enhancements**: Ready for interceptors, caching, or auth tokens
+
+**Before (Repeated Code):**
+
+```typescript
+// AnalyticsService
+const { data, error } = await supabase.from('posts').select('*');
+if (error) throw new Error(`Failed to fetch posts: ${error.message}`);
+
+// MetricsService
+const { data, error } = await supabase.from('daily_metrics').select('*');
+if (error) throw new Error(`Failed to fetch metrics: ${error.message}`);
+```
+
+**After (DRY with ApiClient):**
+
+```typescript
+// AnalyticsService extends ApiClient
+const { data, error } = await this.client.from('posts').select('*');
+if (error) this.handleError(error, 'Failed to fetch posts');
+
+// MetricsService extends ApiClient
+const { data, error } = await this.client.from('daily_metrics').select('*');
+if (error) this.handleError(error, 'Failed to fetch metrics');
+```
+
+**Trade-offs:**
+
+- ❌ Slightly more abstraction (but worth it for maintainability)
+- ✅ Future-proof for adding authentication, logging, or caching
+- ✅ Easier to enforce consistent error handling across the app
+
+---
 
 ### Tailwind CSS
 

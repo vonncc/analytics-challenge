@@ -1,12 +1,12 @@
-import { supabase } from './supabaseClient';
+import { ApiClient } from './apiClient';
 import { DailyMetric, ChartDataPoint } from '@/types';
 
-export class MetricsService {
+export class MetricsService extends ApiClient {
   static async getDailyMetrics(
     startDate: string,
     endDate: string
   ): Promise<DailyMetric[]> {
-    const { data, error } = await supabase
+    const { data, error } = await this.client
       .from('daily_metrics')
       .select('*')
       .gte('date', startDate)
@@ -14,7 +14,7 @@ export class MetricsService {
       .order('date', { ascending: true });
 
     if (error) {
-      throw new Error(`Failed to fetch daily metrics: ${error.message}`);
+      this.handleError(error, 'Failed to fetch daily metrics');
     }
 
     return data || [];
@@ -37,7 +37,7 @@ export class MetricsService {
     date: string,
     userId: string
   ): Promise<DailyMetric> {
-    const { data: posts, error: postsError } = await supabase
+    const { data: posts, error: postsError } = await this.client
       .from('posts')
       .select('likes, shares, comments, saves, reach')
       .eq('user_id', userId)
@@ -45,20 +45,20 @@ export class MetricsService {
       .lte('posted_at', `${date}T23:59:59`);
 
     if (postsError) {
-      throw new Error(
-        `Failed to fetch posts for metrics: ${postsError.message}`
-      );
+      this.handleError(postsError, 'Failed to fetch posts for metrics');
     }
 
-    const totalLikes = posts?.reduce((sum, p) => sum + p.likes, 0) || 0;
-    const totalShares = posts?.reduce((sum, p) => sum + p.shares, 0) || 0;
-    const totalComments = posts?.reduce((sum, p) => sum + p.comments, 0) || 0;
-    const totalSaves = posts?.reduce((sum, p) => sum + p.saves, 0) || 0;
+    const totalLikes = posts?.reduce((sum: number, p) => sum + p.likes, 0) || 0;
+    const totalShares =
+      posts?.reduce((sum: number, p) => sum + p.shares, 0) || 0;
+    const totalComments =
+      posts?.reduce((sum: number, p) => sum + p.comments, 0) || 0;
+    const totalSaves = posts?.reduce((sum: number, p) => sum + p.saves, 0) || 0;
     const totalEngagement =
       totalLikes + totalShares + totalComments + totalSaves;
-    const totalReach = posts?.reduce((sum, p) => sum + p.reach, 0) || 0;
+    const totalReach = posts?.reduce((sum: number, p) => sum + p.reach, 0) || 0;
 
-    const { data, error } = await supabase
+    const { data, error } = await this.client
       .from('daily_metrics')
       .upsert({
         user_id: userId,
@@ -70,7 +70,7 @@ export class MetricsService {
       .single();
 
     if (error) {
-      throw new Error(`Failed to upsert daily metric: ${error.message}`);
+      this.handleError(error, 'Failed to upsert daily metric');
     }
 
     return data;
