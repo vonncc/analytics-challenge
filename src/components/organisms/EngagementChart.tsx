@@ -63,7 +63,7 @@ export const EngagementChart: React.FC = () => {
     })) || [];
 
   const ChartComponent = chartType === 'area' ? AreaChart : LineChart;
-  const DataComponent = chartType === 'area' ? Area : Line;
+  const DataComponent = (chartType === 'area' ? Area : Line) as typeof Line;
 
   return (
     <Card>
