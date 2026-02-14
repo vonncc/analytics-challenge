@@ -541,9 +541,14 @@ This is a challenge project, but if you'd like to suggest improvements:
 
 MIT License - feel free to use this project for learning or as a template.
 
-## 🙏 Acknowledgments
+## �️ Technologies Used
 
-- Next.js team for the amazing framework
-- Supabase for the backend infrastructure
-- Recharts for beautiful charts
-- Lucide for clean icons
+- **Next.js 16** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Supabase** - PostgreSQL database with authentication and RLS
+- **TanStack Query** - Server state management and caching
+- **Zustand** - Lightweight client state management
+- **Recharts** - Interactive data visualization
+- **Tailwind CSS** - Utility-first styling
+- **Lucide React** - Beautiful icon library
+- **Vercel** - Deployment and hosting platform
