@@ -33,7 +33,7 @@
 - [Code Quality](#-code-quality)
 - [Technologies Used](#️-technologies-used)
 
-## �🚀 Features
+## �� Features
 
 - **Authentication**: Secure login with Supabase Auth
 - **Posts Table**: Sortable, filterable table with engagement metrics
