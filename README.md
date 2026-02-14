@@ -1,8 +1,39 @@
 # Analytics Dashboard
 
-A full-stack social media analytics dashboard built with Next.js, TypeScript, Supabase, and modern React patterns. Track Instagram and TikTok post performance with real-time metrics, trends, and insights.
+> A full-stack social media analytics dashboard built with Next.js, TypeScript, Supabase, and modern React patterns. Track Instagram and TikTok post performance with real-time metrics, trends, and insights.
 
-## 🚀 Features
+## 📺 Live Demo
+
+🔗 **[View Live Application](https://your-vercel-url.vercel.app)** _(Add your Vercel URL after deployment)_
+
+**Test Credentials:**
+
+- Email: `test1@example.com`
+- Password: `Test123!@#`
+
+## ✨ Key Highlights
+
+- ✅ **Full-stack TypeScript** application with type safety throughout
+- ✅ **Production-ready** with authentication, RLS, and comprehensive error handling
+- ✅ **Modern architecture** using Atomic Design and clean separation of concerns
+- ✅ **Performance optimized** with server-side aggregation and client-side caching
+- ✅ **Fully documented** with detailed explanations of design decisions
+
+## � Table of Contents
+
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Architecture & Design Decisions](#️-architecture--design-decisions)
+- [Project Structure](#️-project-structure)
+- [Setup Instructions](#️-setup-instructions)
+- [Security](#-security)
+- [Testing](#-testing)
+- [Database Schema](#-database-schema)
+- [Deployment](#-deployment-vercel)
+- [Code Quality](#-code-quality)
+- [Technologies Used](#️-technologies-used)
+
+## �🚀 Features
 
 - **Authentication**: Secure login with Supabase Auth
 - **Posts Table**: Sortable, filterable table with engagement metrics
@@ -527,15 +558,6 @@ git push origin main
 - `CHALLENGE_CHECKLIST.md`: Requirements tracking
 - `PROJECT_STRUCTURE.md`: Detailed architecture
 - `.env.example`: Environment variable template
-
-## 🤝 Contributing
-
-This is a challenge project, but if you'd like to suggest improvements:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
 
 ## 📄 License
 
