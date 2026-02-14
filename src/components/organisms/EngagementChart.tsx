@@ -62,9 +62,6 @@ export const EngagementChart: React.FC = () => {
       date: formatChartDate(point.date),
     })) || [];
 
-  const ChartComponent = chartType === 'area' ? AreaChart : LineChart;
-  const DataComponent = (chartType === 'area' ? Area : Line) as typeof Line;
-
   return (
     <Card>
       <CardHeader>
@@ -97,43 +94,81 @@ export const EngagementChart: React.FC = () => {
           />
         ) : (
           <ResponsiveContainer width="100%" height={320}>
-            <ChartComponent data={formattedData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis
-                dataKey="date"
-                stroke="#6b7280"
-                style={{ fontSize: '12px' }}
-              />
-              <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '6px',
-                }}
-              />
-              <Legend />
-              {selectedMetrics.includes('engagement') && (
-                <DataComponent
-                  type="monotone"
-                  dataKey="engagement"
-                  stroke={CHART_COLORS.engagement}
-                  fill={CHART_COLORS.engagement}
-                  fillOpacity={chartType === 'area' ? 0.6 : 1}
-                  strokeWidth={2}
+            {chartType === 'area' ? (
+              <AreaChart data={formattedData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="date"
+                  stroke="#6b7280"
+                  style={{ fontSize: '12px' }}
                 />
-              )}
-              {selectedMetrics.includes('reach') && (
-                <DataComponent
-                  type="monotone"
-                  dataKey="reach"
-                  stroke={CHART_COLORS.reach}
-                  fill={CHART_COLORS.reach}
-                  fillOpacity={chartType === 'area' ? 0.6 : 1}
-                  strokeWidth={2}
+                <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '6px',
+                  }}
                 />
-              )}
-            </ChartComponent>
+                <Legend />
+                {selectedMetrics.includes('engagement') && (
+                  <Area
+                    type="monotone"
+                    dataKey="engagement"
+                    stroke={CHART_COLORS.engagement}
+                    fill={CHART_COLORS.engagement}
+                    fillOpacity={0.6}
+                    strokeWidth={2}
+                  />
+                )}
+                {selectedMetrics.includes('reach') && (
+                  <Area
+                    type="monotone"
+                    dataKey="reach"
+                    stroke={CHART_COLORS.reach}
+                    fill={CHART_COLORS.reach}
+                    fillOpacity={0.6}
+                    strokeWidth={2}
+                  />
+                )}
+              </AreaChart>
+            ) : (
+              <LineChart data={formattedData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="date"
+                  stroke="#6b7280"
+                  style={{ fontSize: '12px' }}
+                />
+                <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '6px',
+                  }}
+                />
+                <Legend />
+                {selectedMetrics.includes('engagement') && (
+                  <Line
+                    type="monotone"
+                    dataKey="engagement"
+                    stroke={CHART_COLORS.engagement}
+                    fill={CHART_COLORS.engagement}
+                    strokeWidth={2}
+                  />
+                )}
+                {selectedMetrics.includes('reach') && (
+                  <Line
+                    type="monotone"
+                    dataKey="reach"
+                    stroke={CHART_COLORS.reach}
+                    fill={CHART_COLORS.reach}
+                    strokeWidth={2}
+                  />
+                )}
+              </LineChart>
+            )}
           </ResponsiveContainer>
         )}
       </CardContent>
